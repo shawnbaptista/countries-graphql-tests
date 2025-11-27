@@ -1,0 +1,377 @@
+query Introspection {
+    __schema {
+        queryType {
+            name
+        }
+        types {
+            name
+        }
+    }
+}
+
+query AllRoots {
+    continents {
+        code
+        name
+    }
+    countries {
+        code
+        name
+    }
+    languages {
+        code
+        name
+    }
+}
+
+query SingleEntity {
+    continent(code: "EU") {
+        code
+        name
+    }
+    country(code: "FR") {
+        code
+        name
+    }
+    language(code: "fr") {
+        code
+        name
+        native
+    }
+}
+
+query NotFoundExample {
+    continent(code: "INVALID") {
+        code
+        name
+    }
+    country(code: "INVALID") {
+        code
+        name
+    }
+}
+
+query ContinentShape {
+    continents {
+        code
+        name
+        countries {
+            code
+            name
+        }
+    }
+}
+
+query CountryCore {
+    countries {
+        code
+        name
+        continent {
+            code
+        }
+        languages {
+            code
+            name
+        }
+        states {
+            code
+            name
+        }
+    }
+}
+
+query Continents {
+    continents {
+        name
+        code
+    }
+}
+
+query CountriesList {
+    countries {
+        code
+        name
+        continent {
+            code
+        }
+    }
+}
+
+query Continent_MissingCode {
+    continent {
+        code
+        name
+    }
+}
+
+query Country_MissingCode {
+    country {
+        code
+        name
+    }
+}
+
+query Language_MissingCode {
+    language {
+        code
+        name
+    }
+}
+
+query ContinentsFilter {
+    continents(filter: {code: {eq: "EU"}}) {
+        code
+    }
+}
+
+query Country_WrongType {
+    country(code: 123) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_Multiple {
+    countries(filter: {continent: {eq: "EU"}, name: {eq: "Bulgaria"}}) {
+        code
+        name
+        continent {
+            code
+        }
+    }
+}
+
+query CountriesFilter_EmptyResult {
+    countries(filter: {name: {eq: "INVALID"}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_InvalidFilter {
+    countries(filter: {invalid: {in: []}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCode_EQ {
+    countries(filter: {code: {eq: "FR"}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCode_IN {
+    countries(filter: {code: {in: ["FR", "DE"]}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCode_NE {
+    countries(filter: {code: {ne: "FR"}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCode_NIN {
+    countries(filter: {code: {nin: ["FR", "DE"]}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCode_REGEX {
+    countries(filter: {code: {regex: "^A"}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByContinent_EQ {
+    countries(filter: {continent: {eq: "EU"}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByContinent_IN {
+    countries(filter: {continent: {in: ["EU", "NA"]}})
+    {
+        continent {
+            code
+            name
+        }
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByContinent_NE {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByContinent_NIN {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByContinent_REGEX {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCurrency_EQ {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCurrency_IN {
+    countries(filter: {currency: {in: ["USD", "EUR"]}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCurrency_NE {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCurrency_NIN {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByCurrency_REGEX {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByName_EQ {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByName_IN {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByName_NE {
+    countries(filter: {name: {ne: "United States"}}) {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByName_NIN {
+    countries {
+        code
+        name
+    }
+}
+
+query CountriesFilter_ByName_REGEX {
+    countries {
+        code
+        name
+    }
+}
+
+
+query ContinentsFilter_ByCode_EQ {
+    continents {
+        code
+        name
+    }
+}
+
+query ContinentsFilter_ByCode_IN {
+    continents {
+        code
+        name
+    }
+}
+
+query ContinentsFilter_ByCode_NE {
+    continents {
+        code
+        name
+    }
+}
+
+query ContinentsFilter_ByCode_NIN {
+    continents(filter: {code: {nin: ["EU", "AS"]}}) {
+        code
+        name
+    }
+}
+
+query ContinentsFilter_ByCode_REGEX {
+    continents(filter: {code: {regex: "^A"}}) {
+        code
+        name
+    }
+}
+
+
+
+query Countries_CrossCheck_SingleVsFilter {
+    single: country(code: "FR") {
+        code
+        name
+        continent {
+            code
+        }
+    }
+    list: countries(filter: {code: {eq: "FR"}}) {
+        code
+        name
+        continent {
+            code
+        }
+    }
+}
+
+query Continents_CrossCheck_SingleVsFilter {
+    single: continent(code: "NA") {
+        code
+        name
+    }
+    list: continents(filter: {code: {eq: "NA"}}) {
+        code
+        name
+    }
+}
+
+query LanguageShape {
+    languages {
+        code
+        name
+        native
+        rtl
+    }
+}
+
