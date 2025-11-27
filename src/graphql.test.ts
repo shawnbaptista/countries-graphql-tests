@@ -2,6 +2,8 @@ import { buildHTTPExecutor } from "@graphql-tools/executor-http";
 import { countries } from "countries-list";
 import { parse } from "graphql";
 
+import { describe, it, expect } from "vitest";
+
 import { yoga } from "./graphql";
 
 const executor = buildHTTPExecutor({
