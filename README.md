@@ -105,7 +105,24 @@ _WHY: ESLint demands it. If these values are set to the default of 4, red squigg
     * e.g., `expect(continents.length).toBeGreaterThan(0);`
 * 
 
+## Git Notes
 
+
+### Commit over SSH
+If attempting to push (e.g., `git push origin HEAD`) prompts for username, Git is trying to authenticate over HTTPS.
+  Authenticate over SSH instead by converting remote to SSH:
+
+```commandLine
+git remote set-url origin git@github.com:<username>/<repo>.git
+```
+
+Verify remote has been set:
+
+```commandLine
+git remote -v 
+```
+
+Verify
 ---
 
 # Original Source Repo by Trevor Blades: 
