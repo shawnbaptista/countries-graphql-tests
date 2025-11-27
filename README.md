@@ -122,7 +122,7 @@ Verify remote has been set:
 git remote -v 
 ```
 
-Verify
+
 ---
 
 # Original Source Repo by Trevor Blades: 
