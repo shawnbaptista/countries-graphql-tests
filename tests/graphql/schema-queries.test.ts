@@ -21,6 +21,15 @@ interface SingleEntityQuery {
   language: Language;
 }
 
+interface CountryCoreQuery {
+  country: Country[];
+}
+
+interface NotFoundExampleQuery {
+  continent: [];
+  country: [];
+}
+
 async function runOperation(operationName: string) {
   if (!OPERATION_NAMES.has(operationName)) {
     const available = Array.from(OPERATION_NAMES).join(", ");
@@ -63,9 +72,9 @@ const OPERATION_NAMES = new Set(getOperationNames(document));
 
 describe("Query root -- schema level", () => {
   it("AllRoots returns continents, countries, and languages", async () => {
-    const data = await runOperationExpectData("AllRoots");
+    const { continents, countries, languages } =
+      await runOperationExpectData<AllRootsQuery>("AllRoots");
 
-    const { continents, countries, languages } = data as AllRoots;
     expect(Array.isArray(continents)).toBe(true);
     expect(Array.isArray(countries)).toBe(true);
     expect(Array.isArray(languages)).toBe(true);
@@ -76,20 +85,16 @@ describe("Query root -- schema level", () => {
   });
 
   it("SingleEntity returns a continent, country, and language by code", async () => {
-    const result = await runOperation("SingleEntity");
-    expect(result.errors).toBeUndefined();
-    if (!result.data) {
-      throw new Error("Expected data to be defined");
-    }
+    const { continent, country, language } =
+      await runOperationExpectData<SingleEntityQuery>("SingleEntity");
 
-    const { continent, country, language } = result.data as SingleEntityQuery;
     expect(continent.code).toBe("EU");
     expect(country.code).toBe("FR");
     expect(language.code).toBe("fr");
   });
 
   it("NotFoundExample", async () => {
-    const data = await runOperationExpectData("NotFoundExample");
+    const data = await runOperationExpectData<NotFoundExampleQuery>("NotFoundExample");
 
     const { continent, country } = data as {
       continent: null;
@@ -123,7 +128,7 @@ describe("Query root -- schema level", () => {
   });
 
   it("CountryCore", async () => {
-    const { countries } = await runOperationExpectData("CountryCore");
+    const { countries } = await runOperationExpectData<CountryCoreQuery>("CountryCore");
 
     /**
      * countries
