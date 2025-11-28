@@ -159,7 +159,7 @@ describe("Query root -- schema level", () => {
       // languages can be null for some territories-as-countries
       expect(Array.isArray(country.languages)).toBe(true);
       if (country.languages.length === 0) {
-        // Allowed based on repo data -- see Antartica
+        // Allowed based on repo data -- see Antarctica
       } else {
         seenCountryWithLanguages = true;
         for (const language of country.languages) {
