@@ -5,7 +5,7 @@ import { type DocumentNode, Kind, parse } from "graphql";
 import { describe, expect, it } from "vitest";
 
 import { yoga } from "../../src/graphql";
-import type { Continent, Country, State, Language } from "../types";
+import type { Continent, Country, Language } from "../types";
 
 const getEnveloped = yoga.getEnveloped;
 
