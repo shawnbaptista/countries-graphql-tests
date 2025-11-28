@@ -89,18 +89,93 @@ describe("Query root -- schema level", () => {
   });
 
   it("NotFoundExample", async () => {
-    const result = await runOperation("NotFoundExample");
-    expect(result.errors).toBeUndefined();
-    if (!result.data) {
-      throw new Error("Expected data to be defined");
-    }
+    const data = await runOperationExpectData("NotFoundExample");
 
-    const { continent, country } = result.data as {
+    const { continent, country } = data as {
       continent: null;
       country: null;
     };
 
     expect(continent).toBeNull();
     expect(country).toBeNull();
+  });
+
+  it("ContinentShape", async () => {
+    const { continents } = await runOperationExpectData("ContinentShape");
+
+    expect(Array.isArray(continents)).toBe(true);
+    expect(continents.length).toBeGreaterThan(0);
+
+    for (const continent of continents) {
+      // Check the basic shape
+      expect(typeof continent.code).toBe("string");
+      expect(typeof continent.name).toBe("string");
+
+      // Check the `countries`
+      expect(Array.isArray(continent.countries)).toBe(true);
+
+      // Iterate through each country, verifying shape
+      for (const country of continent.countries) {
+        expect(typeof country.code).toBe("string");
+        expect(typeof country.name).toBe("string");
+      }
+    }
+  });
+
+  it("CountryCore", async () => {
+    const { countries } = await runOperationExpectData("CountryCore");
+
+    /**
+     * countries
+     */
+    expect(Array.isArray(countries)).toBe(true);
+    expect(countries.length).toBeGreaterThan(0);
+
+    let seenCountryWithLanguages = true;
+    let seenUSWithStates = false;
+
+    for (const country of countries) {
+      expect(typeof country.code).toBe("string");
+      expect(typeof country.name).toBe("string");
+
+      /**
+       * continents
+       */
+      if (country.continent) {
+        expect(typeof country.continent.code).toBe("string");
+      }
+
+      /**
+       * languages
+       */
+      // languages can be null for some territories-as-countries
+      expect(Array.isArray(country.languages)).toBe(true);
+      if (country.languages.length === 0) {
+        // Allowed based on repo data -- see Antartica
+      } else {
+        seenCountryWithLanguages = true;
+        for (const language of country.languages) {
+          expect(typeof language.code).toBe("string");
+          expect(typeof language.name).toBe("string");
+        }
+      }
+
+      /**
+       * states
+       */
+      expect(Array.isArray(country.states)).toBe(true);
+
+      if (country.code === "US") {
+        for (const state of country.states) {
+          seenUSWithStates = true;
+          expect(typeof state.code, `${country.name}`).toBe("string");
+          expect(typeof state.name).toBe("string");
+        }
+      }
+    }
+    // Sanity check to make sure at least one country with a language has been checked
+    expect(seenCountryWithLanguages).toBe(true);
+    // Sanity check to make sure at least one state in the US has been checked
+    expect(seenUSWithStates).toBe(true);
   });
 });
