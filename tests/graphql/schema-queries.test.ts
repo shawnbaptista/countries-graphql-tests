@@ -9,6 +9,8 @@ import type { Continent, Country, Language } from "../types";
 
 const getEnveloped = yoga.getEnveloped;
 
+// ----- Result types -----
+
 interface AllRootsQuery {
   continents: Continent[];
   countries: Country[];
@@ -22,13 +24,35 @@ interface SingleEntityQuery {
 }
 
 interface CountryCoreQuery {
-  country: Country[];
+  countries: Country[];
 }
 
 interface NotFoundExampleQuery {
-  continent: [];
-  country: [];
+  continent: null;
+  country: null;
 }
+
+interface ContinentShapeQuery {
+  continents: Continent[];
+}
+
+// ----- Load and parse .graphql once -----
+const queriesSource = fs.readFileSync(
+  path.join(__dirname, "../graphql/queries.graphql"),
+  "utf8",
+);
+const document = parse(queriesSource);
+
+function getOperationNames(doc: DocumentNode): string[] {
+  return doc.definitions
+    .filter((d) => d.kind === Kind.OPERATION_DEFINITION)
+    .map((d: any) => d.name?.value)
+    .filter(Boolean);
+}
+
+const OPERATION_NAMES = new Set(getOperationNames(document));
+
+// ----- Helpers -----
 
 async function runOperation(operationName: string) {
   if (!OPERATION_NAMES.has(operationName)) {
@@ -54,21 +78,7 @@ async function runOperationExpectData<TData>(
   return result.data as TData;
 }
 
-// Load and parse once
-const queriesSource = fs.readFileSync(
-  path.join(__dirname, "../graphql/queries.graphql"),
-  "utf8",
-);
-const document = parse(queriesSource);
-
-function getOperationNames(doc: DocumentNode): string[] {
-  return doc.definitions
-    .filter((d) => d.kind === Kind.OPERATION_DEFINITION)
-    .map((d: any) => d.name?.value)
-    .filter(Boolean);
-}
-
-const OPERATION_NAMES = new Set(getOperationNames(document));
+// ----- Tests -----
 
 describe("Query root -- schema level", () => {
   it("AllRoots returns continents, countries, and languages", async () => {
@@ -94,14 +104,16 @@ describe("Query root -- schema level", () => {
   });
 
   it("NotFoundExample", async () => {
-    const { continent, country } = await runOperationExpectData<NotFoundExampleQuery>("NotFoundExample");
+    const { continent, country } =
+      await runOperationExpectData<NotFoundExampleQuery>("NotFoundExample");
 
     expect(continent).toBeNull();
     expect(country).toBeNull();
   });
 
   it("ContinentShape", async () => {
-    const { continents } = await runOperationExpectData("ContinentShape");
+    const { continents } =
+      await runOperationExpectData<ContinentShapeQuery>("ContinentShape");
 
     expect(Array.isArray(continents)).toBe(true);
     expect(continents.length).toBeGreaterThan(0);
@@ -123,7 +135,8 @@ describe("Query root -- schema level", () => {
   });
 
   it("CountryCore", async () => {
-    const { countries } = await runOperationExpectData<CountryCoreQuery>("CountryCore");
+    const { countries } =
+      await runOperationExpectData<CountryCoreQuery>("CountryCore");
 
     /**
      * countries
@@ -131,7 +144,7 @@ describe("Query root -- schema level", () => {
     expect(Array.isArray(countries)).toBe(true);
     expect(countries.length).toBeGreaterThan(0);
 
-    let seenCountryWithLanguages = true;
+    let seenCountryWithLanguages = false;
     let seenUSWithStates = false;
 
     for (const country of countries) {
@@ -148,10 +161,10 @@ describe("Query root -- schema level", () => {
       /**
        * languages
        */
-      // languages can be null for some territories-as-countries
+      // languages can be empty arrays for some territories-as-countries
       expect(Array.isArray(country.languages)).toBe(true);
       if (country.languages.length === 0) {
-        // Allowed based on repo data -- see Antartica
+        // Allowed based on repo data -- see Antarctica
       } else {
         seenCountryWithLanguages = true;
         for (const language of country.languages) {
