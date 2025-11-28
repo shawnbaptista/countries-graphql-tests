@@ -5,7 +5,7 @@ import { type DocumentNode, Kind, parse } from "graphql";
 import { describe, expect, it } from "vitest";
 
 import { yoga } from "../../src/graphql";
-import type { Continent, Country, Language } from "../types";
+import type { Continent, Country, State, Language } from "../types";
 
 const getEnveloped = yoga.getEnveloped;
 
@@ -30,6 +30,10 @@ interface CountryCoreQuery {
 interface NotFoundExampleQuery {
   continent: null;
   country: null;
+}
+
+interface ContinentShapeQuery {
+  continents: Continent[];
 }
 
 // ----- Load and parse .graphql once -----
@@ -108,7 +112,8 @@ describe("Query root -- schema level", () => {
   });
 
   it("ContinentShape", async () => {
-    const { continents } = await runOperationExpectData("ContinentShape");
+    const { continents } =
+      await runOperationExpectData<ContinentShapeQuery>("ContinentShape");
 
     expect(Array.isArray(continents)).toBe(true);
     expect(continents.length).toBeGreaterThan(0);
@@ -156,7 +161,7 @@ describe("Query root -- schema level", () => {
       /**
        * languages
        */
-      // languages can be null for some territories-as-countries
+      // languages can be empty arrays for some territories-as-countries
       expect(Array.isArray(country.languages)).toBe(true);
       if (country.languages.length === 0) {
         // Allowed based on repo data -- see Antarctica
