@@ -94,12 +94,7 @@ describe("Query root -- schema level", () => {
   });
 
   it("NotFoundExample", async () => {
-    const data = await runOperationExpectData<NotFoundExampleQuery>("NotFoundExample");
-
-    const { continent, country } = data as {
-      continent: null;
-      country: null;
-    };
+    const { continent, country } = await runOperationExpectData<NotFoundExampleQuery>("NotFoundExample");
 
     expect(continent).toBeNull();
     expect(country).toBeNull();
