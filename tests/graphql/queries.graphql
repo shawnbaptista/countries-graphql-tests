@@ -80,7 +80,7 @@ query CountryCore {
     }
 }
 
-query Continents {
+query ContinentsList {
     continents {
         name
         code

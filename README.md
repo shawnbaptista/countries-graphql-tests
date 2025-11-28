@@ -27,7 +27,7 @@ bun test
 
 ### Dev install notes
 
-* Declared bun as the project's package manager
+Declared bun as the project's package manager
 
 Obtain bun's version
 ```commandLine
@@ -38,12 +38,12 @@ Added bun to `package.json`
 "packageManager": "bun@1.3.3"
 ```
 
-* Installed `node` on machine
+Installed `node` on machine
 ```bash
 brew install node 
 ```
 
-* Installed `vitest` as dev dependency
+Installed `vitest` as dev dependency
 ```bash
 bun add -D vitest @vitest/ui
 ```
