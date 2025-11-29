@@ -62,7 +62,7 @@ TODO: Add schema-level and http smoke tests
     └── graphql
         ├── schema-queries.test.ts      # schema-level tests (fast)
         ├── schema-filters.test.ts      # filter behavior
-        └── http-smoke.todo.ts          # end-to-end HTTP smoke tests
+        └── http-smoke.test.ts          # end-to-end HTTP smoke tests
 ```
 
 ### WebStorm Run/Debug Configuration
