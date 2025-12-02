@@ -122,6 +122,18 @@ Verify remote has been set:
 git remote -v 
 ```
 
+## Using Docker
+
+### Using docker-compose
+```
+docker compose up --build countries-tests
+```
+
+### Build + run a test container
+```
+docker build -t countries-tests --target test .
+docker run --rm countries-tests
+```
 
 ---
 

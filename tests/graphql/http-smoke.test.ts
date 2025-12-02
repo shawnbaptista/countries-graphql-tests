@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { yoga } from "../../src/graphql";
-const GRAPHQL_URL = "http://localhost:8787/graphql";
+
+// Allow the variable to be set via environment variables -- helpful for environment tests (AWS vs. Docker vs. local)
+const GRAPHQL_URL = process.env.GRAPHQL_URL ?? "http://localhost:8787/graphql";
 
 async function httpRequest(init: RequestInit & { url?: string } = {}) {
   const url = init.url ?? GRAPHQL_URL;
